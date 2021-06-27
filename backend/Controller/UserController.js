@@ -8,6 +8,35 @@ const createToken = (id) => {
     });
 };
 
+
+//error handling
+const handleErrors = (err) => {
+  console.log(err.message, err.code);
+  let errors = { email: '', password: ''};
+
+  if (err.code === 11000) {
+     errors.email = 'That Email is Already Registered';
+    }
+    
+  if(err.message === "invalid email") {
+    errors.email = "Invalid Email";
+  } 
+
+  if(err.message === "incorrect password"){
+    errors.password = "Password is incorrect";
+    
+  }
+
+
+  if (err.message.includes('User validation failed')) {
+    Object.values(err.errors).forEach(({ properties }) => {
+      errors[properties.path] = properties.message;
+    });
+  }
+return errors;
+}
+
+
 module.exports.post_signup = async(req,res)=>
 {
   const {fullName,email,password,username}=req.body;
@@ -35,16 +64,17 @@ module.exports.post_signup = async(req,res)=>
     }
     catch(err)
     {
-       res.json(err);
+      const errors = handleErrors(err);
+      res.status(400).json({errors});
     }
  
 }
 
 module.exports.post_login = async(req, res) => {
-  const {username} = req.body
+  const {email} = req.body
   const {password} = req.body
   try{
-    const user = await User.login(username,password);
+    const user = await User.login(email,password);
     const token = createToken(user._id);
     // res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000});
      res.status(201).json({
@@ -55,6 +85,7 @@ module.exports.post_login = async(req, res) => {
      });  
     }
       catch(err){
-        console.log(err)
+        const errors = handleErrors(err);
+        res.status(400).json({errors});
       }
 }
