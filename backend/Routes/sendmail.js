@@ -11,8 +11,8 @@ router.post('/send_mail', (req,res) => {
     const transport = nodemailer.createTransport({
         service: 'gmail',
         auth:{
-            user: 'divyashasinha23@gmail.com',
-            pass:'29261623mmdd'
+            user: process.env.USER_EMAIL,
+            pass: process.env.PASS
         }
     });
 
