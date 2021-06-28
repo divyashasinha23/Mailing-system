@@ -3,7 +3,8 @@ const app  = express();
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const userRoute = require('./Routes/routes');
-const emailRoute = require('./Routes/sendmail');
+const emailRoute = require('./Routes/OneDayMail');
+const SecondEmailRoute = require('./Routes/SecondMail');
 const cors = require('cors');
 
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use(cors())
 app.use('/app',userRoute);
 app.use('/app', emailRoute);
+app.use('/app', SecondEmailRoute);
 
 
 
