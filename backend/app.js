@@ -5,6 +5,9 @@ const dotenv = require('dotenv');
 const userRoute = require('./Routes/routes');
 const emailRoute = require('./Routes/OneDayMail');
 const SecondEmailRoute = require('./Routes/SecondMail');
+const MonthlyEmailRoute = require('./Routes/MonthlyMail');
+const WeeklyEmailRoute = require('./Routes/WeeklyMail');
+const YearlyEmailRoute = require('./Routes/YearlyMail');
 const cors = require('cors');
 
 
@@ -19,6 +22,9 @@ app.use(cors())
 app.use('/app',userRoute);
 app.use('/app', emailRoute);
 app.use('/app', SecondEmailRoute);
+app.use('/app', MonthlyEmailRoute);
+app.use('/app', WeeklyEmailRoute);
+app.use('/app', YearlyEmailRoute);
 
 
 
