@@ -8,14 +8,15 @@ const SecondEmailRoute = require('./Routes/SecondMail');
 const MonthlyEmailRoute = require('./Routes/MonthlyMail');
 const WeeklyEmailRoute = require('./Routes/WeeklyMail');
 const YearlyEmailRoute = require('./Routes/YearlyMail');
+const connectDB = require('./config/db');
+const colors = require('colors');
 const cors = require('cors');
 
 
 dotenv.config();
 
-mongoose.connect(process.env.MONGO_URI, () => {
-    console.log('MongoDB connected');
-})
+connectDB();
+
 
 app.use(express.json());
 app.use(cors())
@@ -24,7 +25,7 @@ app.use('/app', emailRoute);
 app.use('/app', SecondEmailRoute);
 app.use('/app', MonthlyEmailRoute);
 app.use('/app', WeeklyEmailRoute);
-app.use('/app', YearlyEmailRoute);
+// app.use('/app', YearlyEmailRoute);
 
 
 

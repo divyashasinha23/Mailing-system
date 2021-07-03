@@ -1,12 +1,11 @@
 const User = require('../Models/SignupSchema');
 const jwt = require('jsonwebtoken');
 
-const maxAge = 1 * 24 * 60 * 60 * 1000;
 const createToken = (id) => {
-    return jwt.sign({id}, process.env.USER, {
-    expiresIn: maxAge,
-    });
-};
+  return jwt.sign({id}, process.env.USER ,{
+  expiresIn: '30d'
+});
+}
 
 
 //error handling
@@ -76,7 +75,6 @@ module.exports.post_login = async(req, res) => {
   try{
     const user = await User.login(email,password);
     const token = createToken(user._id);
-    // res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000});
      res.status(201).json({
        _id : user._id,
        password: user.password,
@@ -88,4 +86,26 @@ module.exports.post_login = async(req, res) => {
         const errors = handleErrors(err);
         res.status(400).json({errors});
       }
+}
+
+//profile section
+module.exports.get_profile = async (req,res) => {
+  try{
+  const user = await User.findById(req.user._id);
+  if(user) {
+      res.json({
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          username: user.username,
+      });
+  }
+  else{
+      res.status(404);
+      throw new Error('user not found');
+  }
+  }
+  catch(err){
+      console.log(err);
+  }
 }
