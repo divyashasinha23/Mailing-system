@@ -1,17 +1,26 @@
+const Mail = require('../Models/MailSchema');
 const nodemailer = require('nodemailer');
-const express = require('express');
-const router = express.Router();
 const schedule = require('node-schedule');
-const Auth = require('../Middleware/authMiddleware');
 
 
-router.post('/Monthly_Schedule', Auth, (req,res) => {
+
+module.exports.weeklyMail = async(req,res) => {
+
+    
     let {text} = req.body;
     var {from} = req.body;
     var {to} = req.body;
     var {subject} = req.body;
     var {cc} = req.body;
 
+
+    const {hr} = req.body;
+    const {min} = req.body;
+    const {dow} = req.body;
+    const {sec} = req.body;
+    const {yr} = req.body;
+
+    try{
     const transport = nodemailer.createTransport({
         service: 'gmail',
         auth:{
@@ -41,15 +50,18 @@ router.post('/Monthly_Schedule', Auth, (req,res) => {
     };
 
          
-    const {hr} = req.body;
-    const {min} = req.body;
-    const {dow} = req.body;
-    const {mon} = req.body;
-    const {yr} = req.body;
-    const {date} = req.body;
-    const {sec} = req.body;
 
-    const MonthSchedule =  schedule.scheduleJob({date:date, hour: hr, minute:min}, () => {
+    
+    const weeklymail =  await Mail.create({});
+    
+    if(weeklymail){
+    const rule = new schedule.RecurrenceRule();
+    rule.hour = hr;
+    rule.minute = min;
+    rule.dayOfWeek = dow;
+
+     
+    const WeekSchedule = schedule.scheduleJob(rule, () => {
         transport.sendMail(mailDetails, function(err, info) {
             if(err) {
                 console.log(err);
@@ -57,8 +69,18 @@ router.post('/Monthly_Schedule', Auth, (req,res) => {
                 console.log('Email sent successfully'+ info.response);
             }
         }); 
-       });
+    });
 
-});
+    }
 
-module.exports = router;
+  else{
+    res.status(400);
+    throw new Error ('Invalid details'); 
+  }
+}
+catch(err)
+{
+  console.log(err);
+}
+}
+

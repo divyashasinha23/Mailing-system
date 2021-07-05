@@ -2,8 +2,9 @@ const nodemailer = require('nodemailer');
 const express = require('express');
 const router = express.Router();
 const schedule = require('node-schedule');
+const Auth = require('../Middleware/authMiddleware');
 
-router.post('/Monthly_Schedule', (req,res) => {
+router.post('/Yearly_Schedule', Auth, (req,res) => {
     let {text} = req.body;
     var {from} = req.body;
     var {to} = req.body;
